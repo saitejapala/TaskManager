@@ -23,11 +23,12 @@ builder.Services.AddDbContext<TaskManagerApi.Infrastructure.Data.AppDbContext>(o
 {
     if (DbPorovider == "PostgreSQL")
     {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
-    }
-    else // Default to Sqlserver
-    {
         connectionString = builder.Configuration.GetConnectionString("PgDefaultConnection") ?? string.Empty;
+    }
+    else // Default to SqlServer
+    {
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+        options.UseSqlServer(connectionString, x => x.MigrationsAssembly("TaskManagerApi.Infrastructure"));
     }
 });
 
