@@ -15,21 +15,15 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
 
-string? DbPorovider = builder.Configuration.GetValue<string>("DatabaseProvider");
+
 string connectionString = string.Empty;
 
 builder.Services.AddDbContext<TaskManagerApi.Infrastructure.Data.AppDbContext>(options =>
 {
-    if (DbPorovider == "PostgreSQL")
-    {
-        connectionString = builder.Configuration.GetConnectionString("PgDefaultConnection") ?? string.Empty;
-    }
-    else // Default to SqlServer
-    {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
-        options.UseSqlServer(connectionString, x => x.MigrationsAssembly("TaskManagerApi.Infrastructure"));
-    }
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+    options.UseNpgsql(connectionString);
 });
 
 //Dependency Injection for Repositories and Services
@@ -54,5 +48,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();
