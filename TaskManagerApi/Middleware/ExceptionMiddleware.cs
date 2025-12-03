@@ -31,10 +31,9 @@ namespace TaskManagerApi.Middleware
 
             var response = new ResponseModel
             (
-                StatusCode : HttpStatusCode.InternalServerError,
                 IsSuccess : false,
                 Message : "Internal Server Error: " + exception.Message,
-                Data : string.Empty
+                Data : null
             );
 
             var json = JsonSerializer.Serialize(response);

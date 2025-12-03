@@ -4,7 +4,6 @@ using System.Text.Json;
 using TaskManagerApi.Application.Dtos;
 using TaskManagerApi.Application.Interfaces;
 using TaskManagerApi.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TaskManagerApi.Controllers
 {
@@ -19,54 +18,55 @@ namespace TaskManagerApi.Controllers
         }
 
         [HttpGet("GetAllTasks")]
-        public async Task<ResponseModel> GetAllTasks()
+        public async Task<ActionResult<ResponseModel>> GetAllTasks()
         {
             var tasks = await _workItemService.GetAllTasksAsync();
-            return new ResponseModel(HttpStatusCode.OK, true, JsonSerializer.Serialize(tasks));
+            return Ok(new ResponseModel(IsSuccess: true, Data: tasks));
         }
 
-        [HttpGet("Details/{id}")]
-        public async Task<ResponseModel> Details(int id)
+        [HttpGet("Details/{id:int}")]
+        public async Task<ActionResult<ResponseModel>> Details(int id)
         {
             var task = await _workItemService.GetTaskByIdAsync(id);
             if (task is null)
             {
-                return new ResponseModel(HttpStatusCode.NotFound, false, Message:"No data found");
+                return NotFound(new ResponseModel(IsSuccess: false, Message: "No data found"));
             }
-            return new ResponseModel(HttpStatusCode.OK, true, JsonSerializer.Serialize(task));
+            return Ok(new ResponseModel(true, task));
         }
-        
+
+        [Route("Create")]
         [HttpPost]
-        public async Task<ResponseModel> Create([FromBody] CreateWorkItemDto dto)
+        public async Task<ActionResult<ResponseModel>> Create([FromBody] CreateWorkItemDto dto)
         {
             var createdTask = await _workItemService.CreateTaskAsync(dto);
             if (createdTask is null)
             {
-                return new ResponseModel(HttpStatusCode.InternalServerError, false, Message: "Task not craeted");
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseModel (IsSuccess: false, Message: "Task not craeted"));
             }
-            return new ResponseModel(HttpStatusCode.Created, true, JsonSerializer.Serialize(createdTask));
+            return StatusCode((int)HttpStatusCode.Created,new ResponseModel(true, createdTask));
         }
 
         [HttpPut("UpdateTask/{id}")]
-        public async Task<ResponseModel> UpdateTask( int id, CreateWorkItemDto dto)
+        public async Task<ActionResult<ResponseModel>> UpdateTask(int id, CreateWorkItemDto dto)
         {
             var updatedTask = await _workItemService.UpdateTaskAsync(id, dto);
-            if (updatedTask)
+            if (!updatedTask)
             {
-                return new ResponseModel(HttpStatusCode.InternalServerError, false, Message: "Task not updated");
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseModel(IsSuccess: false, Message: "Task not updated"));
             }
-            return new ResponseModel(HttpStatusCode.OK, true, JsonSerializer.Serialize(updatedTask));
+            return Ok(new ResponseModel(IsSuccess: true, Data: id));
         }
-        
-        [HttpDelete("DeleteTask/{id}")]
-        public async Task<ResponseModel> DeleteTask(int id)
+
+        [HttpDelete("DeleteTask/{id:int}")]
+        public async Task<ActionResult<ResponseModel>> DeleteTask(int id)
         {
             var deletedTask = await _workItemService.DeleteTaskAsync(id);
-            if (deletedTask)
+            if (!deletedTask)
             {
-                return new ResponseModel(HttpStatusCode.InternalServerError, false, Message: "Task not deleted");
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseModel(IsSuccess: false, Message: "Task not deleted"));
             }
-            return new ResponseModel(HttpStatusCode.OK, true, JsonSerializer.Serialize(deletedTask));
+            return Ok(new ResponseModel(IsSuccess: true, Data: id));
         }
     }
 }
