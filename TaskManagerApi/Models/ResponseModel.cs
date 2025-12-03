@@ -5,16 +5,14 @@ namespace TaskManagerApi.Models
 {
     public class ResponseModel
     {
-        public ResponseModel(HttpStatusCode StatusCode, bool IsSuccess, string Data = "", string Message = "Something went wrong" )
+        public ResponseModel(bool IsSuccess, object? Data = null, string Message = "Something went wrong" )
         {
-            this.StatusCode = (int)StatusCode;
             this.IsSuccess = IsSuccess;
             this.Data = Data;
             this.Message = IsSuccess ? string.Empty : Message;
         }
-        public int StatusCode { get; internal set; }
         public string Message { get; set; }
-        public string Data { get; set; }
-        public bool IsSuccess { get; internal set; }
+        public object? Data { get; set; }
+        public bool IsSuccess { get; set; }
     }
 }
