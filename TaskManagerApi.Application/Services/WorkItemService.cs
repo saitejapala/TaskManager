@@ -46,7 +46,7 @@ namespace TaskManagerApi.Application.Services
                 Title = createWorkItemDto.Title,
                 Description = createWorkItemDto.Description,
                 IsCompleted = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
             await _workItemRepository.AddAsync(workItem);
             return new WorkItemDto
@@ -63,7 +63,7 @@ namespace TaskManagerApi.Application.Services
             if (existingItem is null) return false;
             existingItem.Title = updateWorkItemDto.Title;
             existingItem.Description = updateWorkItemDto.Description;
-            existingItem.UpdatedAt = DateTime.UtcNow;
+            existingItem.UpdatedAt = DateTime.Now;
             await _workItemRepository.UpdateAsync(existingItem);
             return true;
         }

@@ -12,5 +12,12 @@ namespace TaskManagerApi.Infrastructure.Data
     {
         public AppDbContext (DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<WorkItem> WorkItems { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
+        }
     }
 }
