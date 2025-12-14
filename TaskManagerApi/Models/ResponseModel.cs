@@ -12,7 +12,7 @@ namespace TaskManagerApi.Models
             this.Message = IsSuccess ? string.Empty : Message;
         }
         public string Message { get; set; }
-        public object? Data { get; set; }
         public bool IsSuccess { get; set; }
+        public object? Data { get; set; }
     }
 }
