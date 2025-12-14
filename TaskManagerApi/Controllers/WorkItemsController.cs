@@ -24,8 +24,8 @@ namespace TaskManagerApi.Controllers
             return Ok(new ResponseModel(IsSuccess: true, Data: tasks));
         }
 
-        [HttpGet("Details/{id:int}")]
-        public async Task<ActionResult<ResponseModel>> Details(int id)
+        [HttpGet("Details")]
+        public async Task<ActionResult<ResponseModel>> Details([FromQuery]int id)
         {
             var task = await _workItemService.GetTaskByIdAsync(id);
             if (task is null)
@@ -47,8 +47,8 @@ namespace TaskManagerApi.Controllers
             return StatusCode((int)HttpStatusCode.Created,new ResponseModel(true, createdTask));
         }
 
-        [HttpPut("UpdateTask/{id}")]
-        public async Task<ActionResult<ResponseModel>> UpdateTask(int id, CreateWorkItemDto dto)
+        [HttpPut("UpdateTask")]
+        public async Task<ActionResult<ResponseModel>> UpdateTask([FromQuery]int id, CreateWorkItemDto dto)
         {
             var updatedTask = await _workItemService.UpdateTaskAsync(id, dto);
             if (!updatedTask)
@@ -58,8 +58,8 @@ namespace TaskManagerApi.Controllers
             return Ok(new ResponseModel(IsSuccess: true, Data: id));
         }
 
-        [HttpDelete("DeleteTask/{id:int}")]
-        public async Task<ActionResult<ResponseModel>> DeleteTask(int id)
+        [HttpDelete("DeleteTask")]
+        public async Task<ActionResult<ResponseModel>> DeleteTask([FromQuery] int id)
         {
             var deletedTask = await _workItemService.DeleteTaskAsync(id);
             if (!deletedTask)

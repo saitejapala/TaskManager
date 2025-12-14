@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Options;
 using System.Data.Common;
 using TaskManagerApi.Application.Interfaces;
@@ -9,26 +10,40 @@ using TaskManagerApi.Infrastructure.Repositories;
 using TaskManagerApi.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var Configuration = builder.Configuration;
+var allowedOrigins = Configuration
+    .GetSection("AllowFrontend")
+    .Get<string[]>() ?? Array.Empty<string>();
 
+// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+             .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string? DbPorovider = builder.Configuration.GetValue<string>("DatabaseProvider");
+string? DbPorovider = Configuration.GetValue<string>("DatabaseProvider");
 string connectionString = string.Empty;
 
 builder.Services.AddDbContext<TaskManagerApi.Infrastructure.Data.AppDbContext>(options =>
 {
     if (DbPorovider == "PostgreSQL")
     {
-        connectionString = builder.Configuration.GetConnectionString("PgDefaultConnection") ?? string.Empty;
+        connectionString = Configuration.GetConnectionString("PgDefaultConnection") ?? string.Empty;
         options.UseNpgsql(connectionString, x => x.MigrationsAssembly("TaskManagerApi.Infrastructure"));
     }
     else // Default to SqlServer
     {
-        connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+        connectionString = Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
         options.UseSqlServer(connectionString, x => x.MigrationsAssembly("TaskManagerApi.Infrastructure"));
     }
 });
