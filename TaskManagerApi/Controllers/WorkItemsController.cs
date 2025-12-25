@@ -53,7 +53,7 @@ namespace TaskManagerApi.Controllers
             var updatedTask = await _workItemService.UpdateTaskAsync(id, dto);
             if (!updatedTask)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseModel(IsSuccess: false, Message: "Task not updated"));
+                return NotFound(new ResponseModel(IsSuccess: false, Message: "Task not found"));
             }
             return Ok(new ResponseModel(IsSuccess: true, Data: id));
         }
@@ -64,7 +64,7 @@ namespace TaskManagerApi.Controllers
             var deletedTask = await _workItemService.DeleteTaskAsync(id);
             if (!deletedTask)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseModel(IsSuccess: false, Message: "Task not deleted"));
+                return NotFound(new ResponseModel(IsSuccess: false, Message: "Task not deleted"));
             }
             return Ok(new ResponseModel(IsSuccess: true, Data: id));
         }

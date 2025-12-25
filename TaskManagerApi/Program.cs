@@ -1,13 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using Microsoft.Extensions.Options;
-using System.Data.Common;
 using TaskManagerApi.Application.Interfaces;
 using TaskManagerApi.Application.Services;
 using TaskManagerApi.Domain.Interfaces;
-using TaskManagerApi.Infrastructure.Data;
 using TaskManagerApi.Infrastructure.Repositories;
 using TaskManagerApi.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var Configuration = builder.Configuration;
@@ -66,7 +63,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseHttpsRedirection();
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
 app.MapControllers();
