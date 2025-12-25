@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS public.workitems
+(
+    id BIGSERIAL PRIMARY KEY,
+
+    title VARCHAR(200) NOT NULL,
+
+    description VARCHAR(1000),
+
+    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+
+    created_at TIMESTAMP WITHOUT TIME ZONE,
+
+    updated_at TIMESTAMP WITHOUT TIME ZONE
+        NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+

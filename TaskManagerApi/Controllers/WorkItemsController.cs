@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
 using TaskManagerApi.Application.Dtos;
@@ -7,6 +8,7 @@ using TaskManagerApi.Models;
 
 namespace TaskManagerApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class WorkItemsController : Controller
