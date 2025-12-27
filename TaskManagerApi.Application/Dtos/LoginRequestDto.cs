@@ -11,6 +11,7 @@ namespace TaskManagerApi.Application.Dtos
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "InValid email")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
 
         [Required(ErrorMessage ="Password id required")]

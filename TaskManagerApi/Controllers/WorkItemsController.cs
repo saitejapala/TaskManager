@@ -11,7 +11,7 @@ namespace TaskManagerApi.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class WorkItemsController : Controller
+    public class WorkItemsController : ControllerBase
     {
         private readonly IWorkItemService _workItemService;
         public WorkItemsController(IWorkItemService workItemService)

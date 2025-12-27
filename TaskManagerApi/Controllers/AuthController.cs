@@ -13,7 +13,7 @@ namespace TaskManagerApi.Controllers
     [AllowAnonymous]
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly IUsersService _usersService;
         private readonly ITokenService _tokenService;

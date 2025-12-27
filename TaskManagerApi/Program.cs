@@ -86,10 +86,10 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();
