@@ -12,7 +12,7 @@ namespace TaskManagerApi.Application.Interfaces
     {
         Task<SignUpDto?> GetUserByEmailAsync(string email);
         Task<SignUpDto?> GetTaskByIdAsync(int id);
-        Task CreateTaskAsync(SignUpDto signUpDto);
+        Task<SignUpDto> CreateTaskAsync(SignUpDto signUpDto);
         Task<bool> UpdateTaskAsync(int id, SignUpDto signUpDto);
         Task<bool> DeleteTaskAsync(int id);
     }

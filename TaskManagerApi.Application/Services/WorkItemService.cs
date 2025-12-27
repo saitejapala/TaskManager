@@ -16,9 +16,9 @@ namespace TaskManagerApi.Application.Services
         {
             _workItemRepository = workItemRepository;
         }
-        public async Task<IEnumerable<WorkItemDto>> GetAllTasksAsync()
+        public async Task<IEnumerable<WorkItemDto>> GetAllTasksAsync(int id)
         {
-            var items = await _workItemRepository.GetAllAsync();
+            var items = await _workItemRepository.GetAllAsync(id);
             return items.Select(i => new WorkItemDto
             {
                 Id = i.Id,
@@ -46,7 +46,8 @@ namespace TaskManagerApi.Application.Services
                 Title = createWorkItemDto.Title,
                 Description = createWorkItemDto.Description,
                 IsCompleted = false,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                UserId = createWorkItemDto.UserId
             };
             await _workItemRepository.AddAsync(workItem);
             return new WorkItemDto

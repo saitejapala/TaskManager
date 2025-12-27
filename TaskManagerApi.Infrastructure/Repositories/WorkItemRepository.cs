@@ -12,9 +12,9 @@ namespace TaskManagerApi.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<WorkItem>> GetAllAsync()
+        public async Task<IEnumerable<WorkItem>> GetAllAsync(int id)
         {
-            return await _context.WorkItems.ToListAsync();
+            return await _context.WorkItems.Where(e => e.UserId == id).ToListAsync();
         }
         public async Task<WorkItem?> GetByIdAsync(int id)
         {

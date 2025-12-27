@@ -8,7 +8,7 @@ namespace TaskManagerApi.Domain.Interfaces
 {
     public interface IWorkItemRepository
     {
-        Task<IEnumerable<WorkItem>> GetAllAsync();
+        Task<IEnumerable<WorkItem>> GetAllAsync(int id);
         Task<WorkItem?> GetByIdAsync(int id);
         Task AddAsync(WorkItem workItem);
         Task UpdateAsync(WorkItem workItem);

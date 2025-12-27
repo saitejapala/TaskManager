@@ -43,8 +43,8 @@ namespace TaskManagerApi.Controllers
                 FullName = request.FullName,
                 Password = _passwordHasher.HashPassword(request.Password)
             };
-            await _usersService.CreateTaskAsync(user);
-            var savedUser = await _usersService.GetUserByEmailAsync(request.Email) ?? new SignUpDto();
+            var savedUser = await _usersService.CreateTaskAsync(user);
+            //var savedUser = await _usersService.GetUserByEmailAsync(request.Email) ?? new SignUpDto();
 
             var token = _tokenService.GenerateToken(savedUser.UserId, user.Email);
 

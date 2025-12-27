@@ -10,7 +10,7 @@ namespace TaskManagerApi.Domain.Interfaces
     {
         Task<Users?> GetUserByEmailAsync(string email);
         Task<Users?> GetByIdAsync(int id);
-        Task AddAsync(Users users);
+        Task<Users> AddAsync(Users users);
         Task UpdateAsync(Users users);
         Task DeleteAsync(int id);
     }
