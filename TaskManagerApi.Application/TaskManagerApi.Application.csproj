@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskManagerApi.Domain\TaskManagerApi.Domain.csproj" />
+    <ProjectReference Include="..\TaskManagerApi.Security\TaskManagerApi.Security.csproj" />
   </ItemGroup>
 
 </Project>

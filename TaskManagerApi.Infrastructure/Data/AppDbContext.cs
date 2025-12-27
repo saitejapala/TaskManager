@@ -12,6 +12,7 @@ namespace TaskManagerApi.Infrastructure.Data
     {
         public AppDbContext (DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<WorkItem> WorkItems => Set<WorkItem>();
+        public DbSet<Users> Users => Set<Users>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -4,6 +4,11 @@ using TaskManagerApi.Application.Services;
 using TaskManagerApi.Domain.Interfaces;
 using TaskManagerApi.Infrastructure.Repositories;
 using TaskManagerApi.Middleware;
+using TaskManagerApi.Security.Services.Classes;
+using TaskManagerApi.Security.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,35 +33,51 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string? DbPorovider = Configuration.GetValue<string>("DatabaseProvider");
 string connectionString = string.Empty;
-
-builder.Services.AddDbContext<TaskManagerApi.Infrastructure.Data.AppDbContext>(options =>
-{
-    if (DbPorovider == "PostgreSQL")
-    {
-        connectionString = Configuration.GetConnectionString("PgDefaultConnection") ?? string.Empty;
-        options.UseNpgsql(connectionString, x => x.MigrationsAssembly("TaskManagerApi.Infrastructure"));
-    }
-    else // Default to SqlServer
-    {
-        connectionString = Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
-        options.UseSqlServer(connectionString, x => x.MigrationsAssembly("TaskManagerApi.Infrastructure"));
-    }
-});
 
 //Dependency Injection for Repositories and Services
 #region Services and Repository
+builder.Services.AddDbContext<TaskManagerApi.Infrastructure.Data.AppDbContext>(options =>
+{
+    connectionString = Configuration.GetConnectionString("PgDefaultConnection") ?? string.Empty;
+    options.UseNpgsql(connectionString, x => x.MigrationsAssembly("TaskManagerApi.Infrastructure"));
+});
 
 builder.Services.AddScoped<IWorkItemRepository, WorkItemRepository>();
-builder.Services.AddScoped<IWorkItemService, WorkItemService>(); 
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
+builder.Services.AddScoped<IWorkItemService, WorkItemService>();
+builder.Services.AddScoped<IUsersService, UsersService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+#region Authenticatication
+if (string.IsNullOrWhiteSpace(Configuration["Jwt:Key"]))
+    throw new InvalidOperationException("JWT Key is not configured in appsettings.json");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = Configuration["Jwt:Issuer"],
+        ValidAudience = Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"] ?? string.Empty)),
+        ClockSkew = TimeSpan.Zero
+    }
+);
+#endregion
 #endregion
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -65,8 +86,10 @@ if (app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 
 app.Run();
