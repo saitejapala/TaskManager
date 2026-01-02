@@ -45,6 +45,12 @@ namespace TaskManagerApi.Infrastructure.Configurations
                 .HasColumnType("timestamp without time zone")
                 .IsRequired()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Auto-set on insert
+
+            //one to many relationship
+            builder.HasMany(w => w.WorkItems)
+                .WithOne(w => w.User)
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

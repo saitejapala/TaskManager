@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManagerApi.Application.Dtos;
+using TaskManagerApi.Domain.Entities;
 
 namespace TaskManagerApi.Application.Interfaces
 {
     public interface IWorkItemService
     {
-        Task<IEnumerable<WorkItemDto>> GetAllTasksAsync();
+        Task<IEnumerable<WorkItemDto>> GetAllTasksAsync(int userid);
         Task<WorkItemDto?> GetTaskByIdAsync(int id);
         Task<WorkItemDto> CreateTaskAsync(CreateWorkItemDto createWorkItemDto);
         Task<bool> UpdateTaskAsync(int id, CreateWorkItemDto updateWorkItemDto);

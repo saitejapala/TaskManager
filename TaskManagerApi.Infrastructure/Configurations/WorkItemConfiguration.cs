@@ -46,6 +46,14 @@ namespace TaskManagerApi.Infrastructure.Configurations
                 .IsRequired()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP"); // Auto-set on insert
 
+            builder.Property(w => w.UserId)
+                .HasColumnName("user_id");
+
+            builder.HasOne(w => w.User)
+                .WithMany(u => u.WorkItems)
+                .HasForeignKey(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Indexes for better performance
             builder.HasIndex(w => w.IsCompleted)
                 .HasDatabaseName("idx_workitems_is_completed");

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskManagerApi.Application.Dtos;
 using TaskManagerApi.Application.Interfaces;
+using TaskManagerApi.Domain.Entities;
 using TaskManagerApi.Domain.Interfaces;
 
 namespace TaskManagerApi.Application.Services
@@ -34,13 +35,12 @@ namespace TaskManagerApi.Application.Services
             if (item is null) return null;
             return new SignUpDto
             {
-                UserId =  item.UserId,
                 Email = item.Email,
                 Password = item.PasswordHash,
                 FullName = item.FullName
             };
         }
-        public async Task CreateTaskAsync(SignUpDto signUpDto)
+        public async Task<SignUpDto> CreateTaskAsync(SignUpDto signUpDto)
         {
             var workItem = new Domain.Entities.Users
             {
@@ -49,7 +49,14 @@ namespace TaskManagerApi.Application.Services
                 PasswordHash = signUpDto.Password,
                 CreatedAt = DateTime.Now
             };
-            await _usersRepository.AddAsync(workItem);
+            var savedUser = await _usersRepository.AddAsync(workItem);
+            return new SignUpDto
+            {
+                UserId = savedUser.UserId,
+                Email = savedUser.Email,
+                FullName = savedUser.FullName,
+                Password = savedUser.PasswordHash
+            };
         }
         public async Task<bool> UpdateTaskAsync(int id, SignUpDto signUpDto)
         {

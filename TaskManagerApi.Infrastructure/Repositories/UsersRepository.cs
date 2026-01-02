@@ -20,10 +20,11 @@ namespace TaskManagerApi.Infrastructure.Repositories
         {
             return await _context.Users.FindAsync(id);
         }
-        public async Task AddAsync(Users users)
+        public async Task<Users> AddAsync(Users users)
         {
             await _context.Users.AddAsync(users);
             await _context.SaveChangesAsync();
+            return users;
         }
         public async Task UpdateAsync(Users users)
         {

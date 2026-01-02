@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 using System.Text.Json;
 using TaskManagerApi.Application.Dtos;
 using TaskManagerApi.Application.Interfaces;
@@ -22,7 +23,8 @@ namespace TaskManagerApi.Controllers
         [HttpGet("GetAllTasks")]
         public async Task<ActionResult<ResponseModel>> GetAllTasks()
         {
-            var tasks = await _workItemService.GetAllTasksAsync();
+            int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userid);
+            var tasks = await _workItemService.GetAllTasksAsync(userid);
             return Ok(new ResponseModel(IsSuccess: true, Data: tasks));
         }
 
@@ -41,6 +43,8 @@ namespace TaskManagerApi.Controllers
         [HttpPost]
         public async Task<ActionResult<ResponseModel>> Create([FromBody] CreateWorkItemDto dto)
         {
+            int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId);
+            dto.UserId = userId;
             var createdTask = await _workItemService.CreateTaskAsync(dto);
             if (createdTask is null)
             {
