@@ -19,7 +19,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<SignUpDto?> GetUserByEmailAsync(string email)
         {
-            var items = await _usersRepository.GetUserByEmailAsync(email);
+            var items = await _usersRepository.GetAsync(user => user.Email == email);
             if (items is null) return null;
             return  new SignUpDto
             {
@@ -31,7 +31,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<SignUpDto?> GetTaskByIdAsync(int id)
         {
-            var item = await _usersRepository.GetByIdAsync(id);
+            var item = await _usersRepository.FindValueAsync(id);
             if (item is null) return null;
             return new SignUpDto
             {
@@ -60,7 +60,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<bool> UpdateTaskAsync(int id, SignUpDto signUpDto)
         {
-            var existingItem = await _usersRepository.GetByIdAsync(id);
+            var existingItem = await _usersRepository.FindValueAsync(id);
             if (existingItem is null) return false;
             existingItem.Email = signUpDto.Email;
             existingItem.FullName = signUpDto.FullName;
@@ -71,7 +71,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<bool> DeleteTaskAsync(int id)
         {
-            var existingItem = await _usersRepository.GetByIdAsync(id);
+            var existingItem = await _usersRepository.FindValueAsync(id);
             if (existingItem is null) return false;
             await _usersRepository.DeleteAsync(id);
             return true;

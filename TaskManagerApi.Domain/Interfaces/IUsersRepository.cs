@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 using TaskManagerApi.Domain.Entities;   
 namespace TaskManagerApi.Domain.Interfaces
 {
-    public interface IUsersRepository
+    public interface IUsersRepository : IBaseRepository<Users>
     {
-        Task<Users?> GetUserByEmailAsync(string email);
-        Task<Users?> GetByIdAsync(int id);
-        Task<Users> AddAsync(Users users);
-        Task UpdateAsync(Users users);
-        Task DeleteAsync(int id);
+
     }
 }
