@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11505.172 d18.3
+VisualStudioVersion = 18.3.11505.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagerApi", "TaskManagerApi.csproj", "{2B65DCF4-29F6-4CEF-9D73-0276F3B4BB50}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagerApi.Application", "..\TaskManagerApi.Application\TaskManagerApi.Application.csproj", "{31AFEF05-2C3E-453F-B3ED-CE1725EAA529}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagerApi.Security", "..\TaskManagerApi.Security\TaskManagerApi.Security.csproj", "{564418B1-1107-4238-A20E-EDB44DCE2BD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Email", "..\TaskManager.Email\TaskManager.Email.csproj", "{3328BB7D-C66F-4481-B6B0-8919EA9CB9E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{564418B1-1107-4238-A20E-EDB44DCE2BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{564418B1-1107-4238-A20E-EDB44DCE2BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{564418B1-1107-4238-A20E-EDB44DCE2BD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3328BB7D-C66F-4481-B6B0-8919EA9CB9E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3328BB7D-C66F-4481-B6B0-8919EA9CB9E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3328BB7D-C66F-4481-B6B0-8919EA9CB9E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3328BB7D-C66F-4481-B6B0-8919EA9CB9E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
