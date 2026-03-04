@@ -18,7 +18,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<IEnumerable<WorkItemDto>> GetAllTasksAsync(int id)
         {
-            var items = await _workItemRepository.GetAllByIdAsync(items => items.Id == id);
+            var items = await _workItemRepository.GetAllByIdAsync(items => items.UserId == id);
             return items.Select(i => new WorkItemDto
             {
                 Id = i.Id,
