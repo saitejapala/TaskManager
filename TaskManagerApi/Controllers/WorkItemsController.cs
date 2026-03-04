@@ -29,7 +29,7 @@ namespace TaskManagerApi.Controllers
         }
 
         [HttpGet("Details")]
-        public async Task<ActionResult<ResponseModel>> Details([FromQuery]int id)
+        public async Task<ActionResult<ResponseModel>> Details([FromQuery] int id)
         {
             var task = await _workItemService.GetTaskByIdAsync(id);
             if (task is null)
@@ -48,13 +48,13 @@ namespace TaskManagerApi.Controllers
             var createdTask = await _workItemService.CreateTaskAsync(dto);
             if (createdTask is null)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseModel (IsSuccess: false, Message: "Task not craeted"));
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ResponseModel(IsSuccess: false, Message: "Task not craeted"));
             }
-            return StatusCode((int)HttpStatusCode.Created,new ResponseModel(true, createdTask));
+            return StatusCode((int)HttpStatusCode.Created, new ResponseModel(true, createdTask));
         }
 
         [HttpPut("UpdateTask")]
-        public async Task<ActionResult<ResponseModel>> UpdateTask([FromQuery]int id, CreateWorkItemDto dto)
+        public async Task<ActionResult<ResponseModel>> UpdateTask([FromQuery] int id, CreateWorkItemDto dto)
         {
             var updatedTask = await _workItemService.UpdateTaskAsync(id, dto);
             if (!updatedTask)
