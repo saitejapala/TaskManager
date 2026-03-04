@@ -18,7 +18,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<IEnumerable<WorkItemDto>> GetAllTasksAsync(int id)
         {
-            var items = await _workItemRepository.GetAllAsync(id);
+            var items = await _workItemRepository.GetAllByIdAsync(items => items.Id == id);
             return items.Select(i => new WorkItemDto
             {
                 Id = i.Id,
@@ -29,7 +29,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<WorkItemDto?> GetTaskByIdAsync(int id)
         {
-            var item = await _workItemRepository.GetByIdAsync(id);
+            var item = await _workItemRepository.FindValueAsync(id);
             if (item is null) return null;
             return new WorkItemDto
             {
@@ -60,7 +60,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<bool> UpdateTaskAsync(int id, CreateWorkItemDto updateWorkItemDto)
         {
-            var existingItem = await _workItemRepository.GetByIdAsync(id);
+            var existingItem = await _workItemRepository.FindValueAsync(id);
             if (existingItem is null) return false;
             existingItem.Title = updateWorkItemDto.Title;
             existingItem.Description = updateWorkItemDto.Description;
@@ -70,7 +70,7 @@ namespace TaskManagerApi.Application.Services
         }
         public async Task<bool> DeleteTaskAsync(int id)
         {
-            var existingItem = await _workItemRepository.GetByIdAsync(id);
+            var existingItem = await _workItemRepository.FindValueAsync(id);
             if (existingItem is null) return false;
             await _workItemRepository.DeleteAsync(id);
             return true;

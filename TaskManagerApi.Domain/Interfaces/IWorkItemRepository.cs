@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 using TaskManagerApi.Domain.Entities;   
 namespace TaskManagerApi.Domain.Interfaces
 {
-    public interface IWorkItemRepository
+    public interface IWorkItemRepository : IBaseRepository<WorkItem>
     {
-        Task<IEnumerable<WorkItem>> GetAllAsync(int id);
-        Task<WorkItem?> GetByIdAsync(int id);
-        Task AddAsync(WorkItem workItem);
-        Task UpdateAsync(WorkItem workItem);
-        Task DeleteAsync(int id);
+
     }
 }
