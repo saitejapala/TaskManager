@@ -17,6 +17,7 @@ COPY ["TaskManagerApi.Application/TaskManagerApi.Application.csproj", "TaskManag
 COPY ["TaskManagerApi.Domain/TaskManagerApi.Domain.csproj", "TaskManagerApi.Domain/"]
 COPY ["TaskManagerApi.Security/TaskManagerApi.Security.csproj", "TaskManagerApi.Security/"]
 COPY ["TaskManagerApi.Infrastructure/TaskManagerApi.Infrastructure.csproj", "TaskManagerApi.Infrastructure/"]
+COPY ["TaskManager.CacheService/TaskManager.CacheService.csproj", "TaskManager.CacheService/"]
 RUN dotnet restore "./TaskManagerApi/TaskManagerApi.csproj"
 COPY . .
 WORKDIR "/src/TaskManagerApi"
