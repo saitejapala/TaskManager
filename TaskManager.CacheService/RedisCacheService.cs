@@ -10,8 +10,7 @@ public class RedisCacheService : IRedisCacheService
     private readonly Lazy<ConnectionMultiplexer> _lazyConnectionMultiplexer;
 
 
-    //User = "default",
-    //Password = "6kXHMxtIdToDaeLo4XwXsaq0ZaXDWf3Y"
+
     private ConnectionMultiplexer Connection => _lazyConnectionMultiplexer.Value;
 
     public RedisCacheService(IConfiguration configuration)
