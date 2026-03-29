@@ -3,7 +3,7 @@ using PostmarkDotNet;
 
 namespace TaskManager.Email
 {
-    public class EmailClient
+    public class EmailClient : IEmailClient
     {
         private readonly IConfiguration _configuration;
         private readonly string apiKey;
@@ -22,15 +22,14 @@ namespace TaskManager.Email
 
         }
 
-
-        public async Task<bool> SendEmail(string toEmail, string emailSubject, string htmlEmailBody, string fallbackemailBody, bool TrackOpens, string emailCategory = "")
+        public async Task<bool> SendEmail(string toEmail, string emailSubject, string htmlEmailBody, string fallbackemailBody, bool TrackOpens = false, string emailCategory = "")
         {
             //IDictionary<string, string> myHeaders = new Dictionary<string, string>
             //{
             //    {"X-CUSTOM-HEADER", "Header content"}
             //};
             // Send an email asynchronously:
-            if (!emailProvider.Equals("Postmark",StringComparison.OrdinalIgnoreCase))
+            if (emailProvider.Equals("Postmark",StringComparison.OrdinalIgnoreCase))
             {
                 var message = new PostmarkMessage()
                 {
