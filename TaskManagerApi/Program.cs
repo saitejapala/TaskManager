@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using TaskManager.CacheService;
+using TaskManager.Email;
 using TaskManagerApi.Application.Interfaces;
 using TaskManagerApi.Application.Services;
 using TaskManagerApi.Domain.Interfaces;
@@ -78,6 +80,8 @@ builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+builder.Services.AddScoped<IEmailClient,EmailClient>();
+builder.Services.AddSingleton<IRedisCacheService, RedisCacheService>();
 #region Authenticatication
 if (string.IsNullOrWhiteSpace(Configuration["Jwt:Key"]))
     throw new InvalidOperationException("JWT Key is not configured in appsettings.json");

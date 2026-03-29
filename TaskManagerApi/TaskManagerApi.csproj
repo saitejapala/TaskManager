@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TaskManager.CacheService\TaskManager.CacheService.csproj" />
     <ProjectReference Include="..\TaskManager.Email\TaskManager.Email.csproj" />
     <ProjectReference Include="..\TaskManagerApi.Application\TaskManagerApi.Application.csproj" />
     <ProjectReference Include="..\TaskManagerApi.Infrastructure\TaskManagerApi.Infrastructure.csproj" />

@@ -18,10 +18,10 @@ namespace TaskManagerApi.Application.Dtos
         [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage ="Password id required")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
-        [Required(ErrorMessage ="Name is required")]
         public string? FullName { get; set; }
+        public string? OTP { get; set; }
+
     }
 }
