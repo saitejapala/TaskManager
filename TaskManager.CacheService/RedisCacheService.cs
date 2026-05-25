@@ -38,8 +38,9 @@ public class RedisCacheService : IRedisCacheService
             db.StringSet(key, value, expire);
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.Error.WriteLine(e.Message);
             return false;
         }
     }
@@ -51,15 +52,24 @@ public class RedisCacheService : IRedisCacheService
             RedisValue? result = db.StringGet(key);
             return result?.ToString();
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.Error.WriteLine(e.Message);
             return null;
         }
     }
 
     public void RemoveKey(string key)
     {
-        var db = Connection.GetDatabase();
-        db.KeyDelete(key);
+        try
+        {
+            var db = Connection.GetDatabase();
+            db.KeyDelete(key);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e.Message);
+            return;
+        }
     }
 }
