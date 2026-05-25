@@ -73,7 +73,7 @@ namespace TaskManagerApi.Controllers
         public async Task<ActionResult<ResponseModel>> RequestSignUpOTP([FromBody] RequestOtpDto request)
         {
             var existingUser = await _usersService.GetUserByEmailAsync(request.Email);
-            if (existingUser is not null) return BadRequest(new ResponseModel(IsSuccess: false, Message: "User with this email already exists"));
+            if (existingUser is not null) return Conflict(new ResponseModel(IsSuccess: false, Message: "User with this email already exists"));
 
             int secureId = RandomNumberGenerator.GetInt32(100000, 999999);
             bool isOTPSucess = _redisCacheService.SetString(request.Email.ToLower(), secureId.ToString());
