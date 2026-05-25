@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
@@ -27,34 +27,28 @@ namespace TaskManagerApi.Controllers
         private readonly IEmailClient _emailClient;
 
         public AuthController(
-            IUsersService _usersService,
-            ITokenService _tokenService,
-            IPasswordHasher _passwordHasher,
-            IRedisCacheService _redisCacheService,
-            IEmailClient _emailClient
+            IUsersService usersService,
+            ITokenService tokenService,
+            IPasswordHasher passwordHasher,
+            IRedisCacheService redisCacheService,
+            IEmailClient emailClient
             )
         {
-            this._usersService = _usersService;
-            this._tokenService = _tokenService;
-            this._passwordHasher = _passwordHasher;
-            this._redisCacheService = _redisCacheService;
-            this._emailClient = _emailClient;
+            _usersService = usersService;
+            _tokenService = tokenService;
+            _passwordHasher = passwordHasher;
+            _redisCacheService = redisCacheService;
+            _emailClient = emailClient;
         }
+
         [HttpPost("Register")]
-        public async Task<ActionResult<ResponseModel>> Register([FromBody] SignUpDto request)
+        public async Task<ActionResult<ResponseModel>> Register([FromBody] RegisterRequestDto request)
         {
-            if (!ModelState.IsValid) return BadRequest(new ResponseModel(IsSuccess: false, Data: ModelState));
-            if(string.IsNullOrWhiteSpace(request.Password)) return BadRequest(new ResponseModel(IsSuccess: false, Message: "Password is required"));
-            if(string.IsNullOrWhiteSpace(request.FullName)) return BadRequest(new ResponseModel(IsSuccess: false, Message: "FullName is required"));
-            var existingUser = await _usersService.GetUserByEmailAsync(request.Email);
-            if (existingUser is not null) return BadRequest(new ResponseModel(IsSuccess: false, Message: "User with this email already exists"));
+            if (await _usersService.GetUserByEmailAsync(request.Email) is not null) 
+                return BadRequest(new ResponseModel(IsSuccess: false, Message: "User with this email already exists"));
 
-
-            if (string.IsNullOrWhiteSpace(request.OTP)) return BadRequest(new ResponseModel(IsSuccess: false, Message: "OTP is Required"));
-            if (!int.TryParse(request.OTP, out _) || request.OTP.Length != 6) return Ok(new ResponseModel(IsSuccess: false, Message: "Invalid OTP format"));
-            string otp = _redisCacheService.GetString(request.Email.ToLower());
-            if (!string.Equals(otp, request.OTP)) return Ok(new ResponseModel(IsSuccess: false, Message: "Invalid OTP"));
-
+            string? otp = _redisCacheService.GetString(request.Email.ToLower());
+            if (!string.Equals(otp, request.OTP)) return BadRequest(new ResponseModel(IsSuccess: false, Message: "Invalid OTP"));
 
             var user = new SignUpDto
             {
@@ -62,6 +56,7 @@ namespace TaskManagerApi.Controllers
                 FullName = request.FullName,
                 Password = _passwordHasher.HashPassword(request.Password)
             };
+            
             var savedUser = await _usersService.CreateTaskAsync(user);
             _redisCacheService.RemoveKey(request.Email.ToLower());
 
@@ -72,39 +67,33 @@ namespace TaskManagerApi.Controllers
                 Email = user.Email,
                 FullName = user.FullName
             }));
-
         }
 
-        [HttpPost("ValidateSignUpOTP")]
-        public async Task<ActionResult<ResponseModel>> ValidateSignUpOTPRegister2([FromBody] SignUpDto request)
+        [HttpPost("RequestSignUpOTP")]
+        public async Task<ActionResult<ResponseModel>> RequestSignUpOTP([FromBody] RequestOtpDto request)
         {
-            if (!ModelState.IsValid) return BadRequest(new ResponseModel(IsSuccess: false, Data: ModelState));
             var existingUser = await _usersService.GetUserByEmailAsync(request.Email);
             if (existingUser is not null) return BadRequest(new ResponseModel(IsSuccess: false, Message: "User with this email already exists"));
 
             int secureId = RandomNumberGenerator.GetInt32(100000, 999999);
             bool isOTPSucess = _redisCacheService.SetString(request.Email.ToLower(), secureId.ToString());
             bool isEmailSucess = await _emailClient.SendEmail(toEmail: request.Email.ToLower(), htmlEmailBody: $"<h1>OTP is : {secureId.ToString()}</h1>", fallbackemailBody: $"OTP is :{secureId.ToString()}", emailSubject: "SignUp OTP");
-            Task.WhenAll();
+            
             string returnMessage = isOTPSucess && isEmailSucess ? "OTP sent please enter the opt in register endpoind" : "OTP faild please try again";
-            return Ok(new ResponseModel(IsSuccess: true, Message: returnMessage));
-
+           
+            if (isOTPSucess && isEmailSucess)
+                return Ok(new ResponseModel(IsSuccess: true, Message: returnMessage));
+                
+            return BadRequest(new ResponseModel(IsSuccess: false, Message: returnMessage));
         }
 
         [HttpPost("Login")]
         public async Task<ActionResult<ResponseModel>> Login([FromBody] LoginRequestDto request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var user = await _usersService.GetUserByEmailAsync(request.Email);
 
-            if (user is null)
-                return Unauthorized(new ResponseModel(IsSuccess: false, Message: "Invalid email"));
-
-            // Verify password
-            if (!_passwordHasher.VerifyPassword(request.Password, user.Password))
-                return Unauthorized(new ResponseModel(IsSuccess: false, Message: "Invalid password"));
+            if (user is null || !_passwordHasher.VerifyPassword(request.Password, user.Password))
+                return Unauthorized(new ResponseModel(IsSuccess: false, Message: "Invalid email or password"));
 
             // Generate token
             var token = _tokenService.GenerateToken(user.UserId, user.Email);
@@ -115,8 +104,6 @@ namespace TaskManagerApi.Controllers
                 Email = user.Email,
                 FullName = user.FullName
             }));
-
-
         }
         [HttpGet("Health")]
         public IActionResult Health()
