@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,9 +17,21 @@ using TaskManagerApi.Security.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 var Configuration = builder.Configuration;
-var allowedOrigins = Configuration
-    .GetSection("AllowFrontend")
-    .Get<string[]>() ?? Array.Empty<string>();
+string[] allowedOrigins;
+var rawValue = Configuration["AllowFrontend"];
+
+if (!string.IsNullOrWhiteSpace(rawValue))
+{
+    rawValue = rawValue.Trim('[', ']', ' ');
+    allowedOrigins = rawValue
+        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+        .Select(o => o.Trim('"', ' ', '\''))
+        .ToArray();
+}
+else
+{
+    allowedOrigins = Configuration.GetSection("AllowFrontend").Get<string[]>() ?? Array.Empty<string>();
+}
 
 // Add services to the container.
 builder.Services.AddCors(options =>
